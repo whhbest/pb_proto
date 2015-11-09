@@ -1,0 +1,20 @@
+[
+  {"name": "ROLE",
+    "value": 1,
+    "methods":[
+      {"ROLE_ADD": 101},
+      {"ROLE_CHOOSE": 102}
+    ]
+  },
+
+  {
+    "name": "CHAT",
+    "value": 2,
+    "methods":[
+      {"CHAT_AUTH": 201},
+      {"CHAT_MSG": 202}
+    ]
+  }
+
+
+]

@@ -1,0 +1,41 @@
+
+//this is comment
+%% and this is comment too
+
+message m_role_add_tos
+    string          name;
+    int32*           time;
+    bool            sex;
+    p_role_info*     role_info;
+end
+
+message p_role_info
+    int64          role_id;
+end
+
+message m_role_add_toc
+    bool            succ;
+    string          reason;
+end
+
+message m_role_choose_tos
+    int32           role_id;
+end
+
+message m_role_choose_toc
+    bool            succ;
+    string          reason;
+end
+
+message m_chat_auth_tos
+    p_role_info*    role_infos;
+end
+
+message m_chat_msg_tos
+    string          msg;
+end
+
+message m_chat_msg_toc
+
+end
+

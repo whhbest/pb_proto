@@ -1,0 +1,6 @@
+-define(ROLE, 1).
+-define(ROLE_ADD, 101).
+-define(ROLE_CHOOSE, 102).
+-define(CHAT, 2).
+-define(CHAT_AUTH, 201).
+-define(CHAT_MSG, 202).
