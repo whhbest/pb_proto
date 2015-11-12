@@ -11,9 +11,9 @@
 
 
 m_role_add_tos(B0) -> 
-   {v1, B1}=?S(B0),
+   {V1, B1}=?S(B0),
    {V2, B2}=?L(B1, int32),
-   {v3, B3}=?B(B2),
+   {V3, B3}=?B(B2),
    {V4, B4}=?L(B3, p_role_info),
    {{m_role_add_tos,V1,V2,V3,V4}, B4}.
 p_role_info(B0) -> 
@@ -26,5 +26,5 @@ m_chat_auth_tos(B0) ->
    {V1, B1}=?L(B0, p_role_info),
    {{m_chat_auth_tos,V1}, B1}.
 m_chat_msg_tos(B0) -> 
-   {v1, B1}=?S(B0),
+   {V1, B1}=?S(B0),
    {{m_chat_msg_tos,V1}, B1}.

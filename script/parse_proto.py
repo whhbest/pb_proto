@@ -126,11 +126,11 @@ class erl(object):
                 elif body["type"] == "int64":
                     self.pb_unpack.write("   {V%s, B%s}=?64(B%s),\n" % (i,i,i-1))
                 elif body["type"] == "bool":
-                    self.pb_unpack.write("   {v%s, B%s}=?B(B%s),\n" % (i,i,i-1))
+                    self.pb_unpack.write("   {V%s, B%s}=?B(B%s),\n" % (i,i,i-1))
                 elif body["type"] == "string":
-                    self.pb_unpack.write("   {v%s, B%s}=?S(B%s),\n" % (i,i,i-1))
+                    self.pb_unpack.write("   {V%s, B%s}=?S(B%s),\n" % (i,i,i-1))
                 else:
-                    self.pb_unpack.write("   {v%s, B%s}=?T(B%s, %s),\n" % (i,i,i-1,body["type"]))
+                    self.pb_unpack.write("   {V%s, B%s}=?T(B%s, %s),\n" % (i,i,i-1,body["type"]))
             tmpArr.append("V%s" % i)
 
         self.pb_unpack.write("   {{%s}, B%s}.\n" % (string.join(tmpArr,","), i))
