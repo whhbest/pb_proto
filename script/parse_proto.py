@@ -15,8 +15,8 @@ def get_instance(target):
     return  cls()
 
 class parser(object):
-    def __init__(self, targets=["erl", "lua"]):
-        self.proto_files = parse_util.get_all_proto()
+    def __init__(self, targets=["erl", "lua"], basedir=None):
+        self.proto_files = parse_util.get_all_proto(basedir)
         self.targets = [get_instance(target) for target in targets]
 
     def parse(self):
@@ -124,7 +124,7 @@ class erl(object):
                 if body["type"] == "int32":
                     self.pb_unpack.write("   {V%s, B%s}=?I32(B%s),\n" % (i, i, i-1))
                 elif body["type"] == "int64":
-                    self.pb_unpack.write("   {V%s, B%s}=?64(B%s),\n" % (i,i,i-1))
+                    self.pb_unpack.write("   {V%s, B%s}=?I64(B%s),\n" % (i,i,i-1))
                 elif body["type"] == "bool":
                     self.pb_unpack.write("   {V%s, B%s}=?B(B%s),\n" % (i,i,i-1))
                 elif body["type"] == "string":
@@ -142,7 +142,7 @@ class erl(object):
             tmpArr.append("V%s" % i)
             i = i+1
 
-        self.pb_pack.write("%s(%s) -> \n" % (msg["head"], string.join(tmpArr, ",")))
+        self.pb_pack.write("%s({%s}) -> \n" % (msg["head"], string.join(tmpArr, ",")))
         tmpArr = []
         i = 1
         for body in msg["body"]:
@@ -162,7 +162,7 @@ class erl(object):
 
             i = i+1
 
-        self.pb_pack.write("   <<%s>>\n" % string.join(tmpArr, ","))
+        self.pb_pack.write("   <<%s>>.\n" % string.join(tmpArr, ","))
 
 
 class lua(object):
@@ -190,22 +190,23 @@ class lua(object):
 
     def generate_pb_pack_file(self, msg):
         self.pb_pack.write("function %s(t)\n" % msg["head"])
+        self.pb_pack.write("  return table.concat({")
         for body in msg["body"]:
             if body["isarray"]:
-                self.pb_pack.write("   s=s..L(t.%s, \"%s\")\n" % (body["name"], body["type"]))
+                self.pb_pack.write("L(t.%s, \"%s\")," % (body["name"], body["type"]))
             else:
                 if body["type"] == "int32":
-                    self.pb_pack.write("  s=s..I32(t.%s)\n" % body["name"])
+                    self.pb_pack.write("I32(t.%s)," % body["name"])
                 elif body["type"] == "int64":
-                    self.pb_pack.write("   s=s..I64(t.%s)\n" % body["name"])
+                    self.pb_pack.write("I64(t.%s)," % body["name"])
                 elif body["type"] == "bool":
-                    self.pb_pack.write("   s=s..B(t.%s)\n" % body["name"])
+                    self.pb_pack.write("B(t.%s)," % body["name"])
                 elif body["type"] == "string":
-                    self.pb_pack.write("   s=s..S(t.%s)\n" % body["name"])
+                    self.pb_pack.write("S(t.%s)," % body["name"])
                 else:
-                    self.pb_pack.write("   s=s..T(t.%s, \"%s\")\n" % body["name"])
-
-        self.pb_pack.write("   return s\nend\n")
+                    self.pb_pack.write("T(t.%s, \"%s\")," % body["name"])
+        self.pb_pack.write("})\n")
+        self.pb_pack.write("end\n")
 
     def generate_pb_unpack_file(self, msg):
         self.pb_unpack.write("function %s(m)\n" % msg["head"])
@@ -219,10 +220,10 @@ class lua(object):
                     self.pb_unpack.write("   m.%s=I64()\n" % body["name"])
                 elif body["type"] == "bool":
                     self.pb_unpack.write("   m.%s=B()\n" % body["name"])
-                elif body["type"] == "sting":
+                elif body["type"] == "string":
                     self.pb_unpack.write("   m.%s=S()\n" % body["name"])
                 else:
-                    self.pb_unpack.write("   m.%s=T(%s)\n" % (body["name"], body["type"]))
+                    self.pb_unpack.write("   m.%s=T(\"%s\")\n" % (body["name"], body["type"]))
         self.pb_unpack.write("end\n")
 
 

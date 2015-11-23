@@ -15,9 +15,10 @@ def get_instance(target):
     return  cls()
 
 class parser(object):
-    def __init__(self, targets=["erl", "lua"]):
+    def __init__(self, targets=["erl", "lua"], basedir=None):
         # print(targets)
-        f = os.path.join(parse_util.proto_dir(), "server_map.JSON")
+        basedir = basedir or parse_util.proto_dir()
+        f = os.path.join(basedir, "server_map.JSON")
         f = open(f)
         f = f.read()
         self.mapdata = json.loads(f)
